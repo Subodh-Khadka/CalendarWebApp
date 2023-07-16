@@ -1,0 +1,430 @@
+﻿@using System.Security.Claims;
+@using System.Globalization;
+@model List<DayList>
+
+
+
+@{
+    ViewData["Title"] = "Index";
+    var eventDayList = ViewBag.Events as List<CalendarEventDate>;
+    var eventList = ViewBag.Events_ as List<CalendarEventCategory>;
+}
+
+<style>
+   
+   @@media only screen and (max-width: 600px) {
+ 
+  }
+
+    dl, ol, ul {
+        margin-top: 0;
+        margin-bottom: 0rem;
+    }
+
+    @@media print {
+        .navbar-brand {
+            display: none;
+        }
+
+        .non {
+            display: none;
+        }
+
+        .month_form {
+            display:none;
+        }
+    }
+</style>
+    
+<form class="month_form" asp-controller="Home" asp-action="Index" method="get">
+    <div class="head">
+        <label for="monthDropdown">Select Month:</label>
+        <select id="monthDropdown" name="month">
+            <option value="1">Baisakh</option>
+            <option value="2">Jestha</option>
+            <option value="3">Asadh</option>
+            <option value="4">Sharawan</option>
+            <option value="5">Bhadra</option>
+            <option value="6">Asoj</option>
+            <option value="7">Kartik</option>
+            <option value="8">Mangsir</option>
+            <option value="9">Poush</option>
+            <option value="10">Magh</option>
+            <option value="11">Falgun</option>
+            <option value="12">Chaitra</option>
+        </select>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+@{
+    int maxVal = Model.Max(m => m.Day);
+    int currentYear = Model.Min(m => m.Year);
+    int currentMonth = Model.Min(m => m.Month);
+    string monthName = GetMonthName(currentMonth); // Function to get the month name based on the month number
+    DateTime currentDate = Model.Min(m => m.EnglishDate);
+    int currentEnglishYear = currentDate.Year;
+    int count = 1;
+    int startDayOfWeek = (int)currentDate.DayOfWeek;
+    int offset = (startDayOfWeek + 7) % 7;
+    count = 1 - offset;
+    int totalBox = offset + maxVal;
+    int remainingBox = totalBox - 35;
+    int new_value = maxVal - remainingBox + 1;
+}
+@functions
+{
+    String GetMonthName(int monthNumber)
+    {
+        string monthName = "";
+        switch (monthNumber)
+        {
+            case 1:
+                monthName = "Baisakh";
+                break;
+            case 2:
+                monthName = "Jestha";
+                break;
+            case 3:
+                monthName = "Asadh";
+                break;
+            case 4:
+                monthName = "Sharawan";
+                break;
+            case 5:
+                monthName = "Bhadra";
+                break;
+            case 6:
+                monthName = "Asoj";
+                break;
+            case 7:
+                monthName = "Kartik";
+                break;
+            case 8:
+                monthName = "Mangisr";
+                break;
+            case 9:
+                monthName = "Poush";
+                break;
+            case 10:
+                monthName = "Magh";
+                break;
+            case 11:
+                monthName = "Falgun";
+                break;
+            case 12:
+                monthName = "Chaitra";
+                break;
+            default:
+                break;
+        }
+        return monthName;
+    }
+
+}
+
+<div class="month_year row">
+    <div class="Nep_month_year col-6">
+        <h5> <span style="color:dodgerblue">@monthName </span><span style="color:black">@currentYear</span></h5>
+    </div>
+
+    <div class="Eng_month_year col-6 text-end">
+        <h5>@ViewBag.selectedEnglishMonth <span style="color:black">@currentEnglishYear</span></h5>
+    </div>
+</div>
+
+<table class="table table-responsive table-bordered">
+    <thead>
+        <tr class="heading">
+            <th>SUN <br />आइत</th>
+            <th>MON <br />सोम</th>
+            <th>TUE <br />मंगल</th>
+            <th>WED <br />बुध </th>
+            <th>THU <br />बिही</th>
+            <th>FRI <br /> शुक्र</th>
+            <th style="background-color:red">SAT <br />शनि</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int row = 0; row < 5; row++)
+        {
+            <tr>
+                @for (int column = 0; column < 7; column++)
+                {
+
+
+                    <td class="day-cell @(column == 6 ? "last-column" : "")">
+                        @if (count > 0 && count <= maxVal)
+                        {
+                            {
+                                string today = currentYear + "-" + currentMonth + "-" + count;
+                                string eventDescription = null;
+                                string eventColor = null;
+                                bool hasDescription = false;
+
+                                @foreach (var item in eventDayList)
+                                {
+                                    @foreach (var item2 in eventList)
+                                    {
+                                        if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "InPlace")
+                                        {
+                                            eventDescription = item.EventDescription;
+                                            eventColor = item2.EventColor;
+
+                                            <div style="" data-toggle="tooltip" data-placement="top" title="@eventDescription" class="data_Container">
+                                                <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == count).EnglishDate.Day</a>
+                                                <a class="nep_Date" asp-action="Update" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    @count
+                                                </a>
+                                                <a class="desc" style="color:@eventColor">
+                                                    @eventDescription
+                                                </a>
+                                            </div>
+
+
+
+                                            hasDescription = true;
+
+                                        }
+                                        if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "None")
+                                        {
+                                            eventColor = item2.EventColor;
+                                            eventDescription = item.EventDescription;
+
+                                            <div data-toggle="tooltip" data-placement="top" title="@eventDescription" class="data_Container">
+                                                <a style="color:@eventColor" class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == count).EnglishDate.Day</a>
+                                                <a style="color:@eventColor" class="nep_Date" asp-action="Update" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    @count
+                                                </a>
+                                            </div>
+
+                                            hasDescription = true;
+                                        }
+
+                                        if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "Footer")
+                                        {
+                                            eventDescription = item.EventDescription;
+
+                                            <div data-toggle="tooltip" data-placement="top" title="@eventDescription" class="data_Container">
+                                                <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == count).EnglishDate.Day</a>
+                                                <a class="nep_Date" asp-action="Update" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    @count
+                                                </a>
+                                            </div>
+
+                                            @*<a asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="showDesc" data-bs-toggle="modal" data-bs-target="#showModal" class="desc" style="color: @eventColor; ">
+                                                @eventDescription
+                                            </a>*@
+
+                                            hasDescription = true;
+                                        }
+
+                                    }
+                                }
+
+                                if (!hasDescription)
+                                {
+                                    @if (@User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
+                                    {
+
+                                        <div class="data_Container">
+                                            <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == count).EnglishDate.Day</a>
+
+                                            <a class="nep_Date" asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                @count
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="data_Container">
+                                            <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == count).EnglishDate.Day</a>
+                                            <a class="nep_Date">
+                                                @count
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
+                        @if (new_value <= maxVal)
+                        {
+                            string today = currentYear + "-" + currentMonth + "-" + new_value;
+                            string eventDescription = null;
+                            string eventColor = null;
+                            bool hasDescription = false;
+
+                            foreach (var item in eventDayList)
+                            {
+                                foreach (var item2 in eventList)
+                                {
+                                    if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "InPlace")
+                                    {
+                                        eventDescription = item.EventDescription;
+                                        eventColor = item2.EventColor;
+
+                                        <div class="data_Container">
+                                            <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == new_value).EnglishDate.Day</a>
+                                            <a class="nep_Date" asp-action="Update" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@new_value" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                @new_value
+                                            </a>
+                                        </div>
+                                        <a asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="showDesc" data-bs-toggle="modal" data-bs-target="#showModal" class="desc" style="color: @eventColor; ">
+                                            @eventDescription
+                                        </a>
+                                        hasDescription = true;
+                                    }
+                                    if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "None")
+                                    {
+                                        eventDescription = item.EventDescription;
+                                        eventColor = item2.EventColor;
+                                        <div class="data_Container">
+                                            <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == new_value).EnglishDate.Day</a>
+                                            <a class="nep_Date" asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@new_value" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                @new_value
+                                            </a>
+                                        </div>
+                                        <a asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="showDesc" data-bs-toggle="modal" data-bs-target="#showModal" class="desc" style="color: @eventColor; ">
+                                            @eventDescription
+                                        </a>
+                                        hasDescription = true;
+                                    }
+                                    if (item.NepaliDate == (today) && item.EventName == item2.EventName && item2.RemarkPosition == "Footer")
+                                    {
+
+                                        //<div class="" style="color: @item2.EventColor; display:flex"><span>@item.NepaliDate-</span>@item.EventDescription</div>
+                                        <a asp-action="Update" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@new_value" data-ajax="true" data-ajax-method="get" data-ajax-complete="showDesc" data-bs-toggle="modal" data-bs-target="#exampleModal" class="desc" style="color: @eventColor; ">
+                                            @eventDescription
+                                        </a>
+                                        <a class="nep_Date" asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@count" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            @new_value
+                                        </a>
+                                        hasDescription = true;
+                                    }
+                                }
+                            }
+
+                            if (!hasDescription)
+                            {
+                                if (@User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
+                                {
+                                    <div class="data_Container">
+                                        <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == new_value).EnglishDate.Day</a>
+                                        <a class="nep_Date" asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@new_value" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            @new_value
+                                        </a>
+                                    </div>
+
+                                    <a asp-action="Create" asp-controller="CalendarEvent" asp-route-param="@currentYear-@currentMonth-@new_value" data-ajax="true" data-ajax-method="get" data-ajax-complete="showDesc" data-bs-toggle="modal" data-bs-target="#showModal" class="desc" style="color: @eventColor; ">
+                                        @eventDescription
+                                    </a>
+                                }
+                                else
+                                {
+                                    <div class="data_Container">
+                                        <a class="eng_date">@Model.First(d => d.Year == currentYear && d.Month == currentMonth && d.Day == new_value).EnglishDate.Day</a>
+                                        <a class="nep_Date">
+                                            @new_value
+                                        </a>
+                                    </div>
+                                }
+                            }
+
+                        }
+                    </td>
+                    count++;
+                    new_value++;
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="container">
+    <style>
+
+        .container {
+
+        }
+
+        .hlist{
+            display: flex;
+            flex-wrap: wrap;
+            font-size: 1rem;
+            margin:0px;
+            padding:0px;
+        }
+
+
+
+    </style>
+
+    <ul class="hlist" style="list-style: none;">
+        @foreach (var item in eventDayList)
+        {
+            foreach (var item2 in eventList)
+            {
+                if (item.EventName == item2.EventName && item2.RemarkPosition == "Footer")
+                {
+                    <li style=" margin-right:20px; color: @item2.EventColor">@item.EventDescription at @item.NepaliDate</li>
+                }
+            }
+        }
+    </ul>
+</div>
+
+@*<div class="container">
+    <ul class="list-unstyled row">
+        @{
+            foreach (var item in eventDayList)
+            {
+                foreach (var item2 in eventList)
+                {
+                    if (item.EventName == item2.EventName && item2.RemarkPosition == "Footer")
+                    {
+                        <li class="col-sm-6 col-md-4 col-lg-3" style="color: @item2.EventColor;">
+                            @item.NepaliDate-@item.EventDescription
+                        </li>
+                    }
+                }
+            }
+        }
+    </ul>
+</div>*@
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="create-page">
+    </div>
+
+</div>
+
+
+<div class="modal fade" id="showModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="show-page">
+    </div>
+
+</div>
+
+<script>
+    Createpage = function (xhr) {
+        document.getElementById('create-page').innerHTML = xhr.responseText;
+    }
+
+    showDesc = function (xhr) {
+        document.getElementById('show-page').innerHTML = xhr.responseText;
+    }
+</script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.5.0/js/bootstrap.bundle.min.js"></script>
+
+
+
+@* //CalendarEventDate? item = eventDayList.Where(e => e.NepaliDate.Equals($"{currentYear}-{currentMonth}-{count}")).FirstOrDefault();
+                                    //if (item != null)
+                                    //{
+                                    //    CalendarEventCategory item_ = eventList.Where(c =>  c.EventName.Equals(item.EventName)).First();
+                                    //    eventDescription = item.EventDescription;
+                                    //    eventColor = item_.EventColor;
+                                    //}*@

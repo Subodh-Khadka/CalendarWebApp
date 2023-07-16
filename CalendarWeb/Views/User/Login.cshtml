@@ -1,0 +1,80 @@
+﻿@model CalendarWeb.Models.UserList
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<style>
+    /*  body {
+            background: url("https://th.bing.com/th/id/R.f9e29df10233b77a439e6ac7471bd199?rik=%2bP4NnQ5vw45yig&riu=http%3a%2f%2fwallpapercave.com%2fwp%2fwc1681950.jpg&ehk=WdqzqI%2bdLDnqDLGIs5BT3IywUmXDn4ZFi%2bTet%2fYeg9k%3d&risl=&pid=ImgRaw&r=0");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+
+        }
+    */
+    .navbar {
+        display: none;
+    }
+
+    .footer {
+        display: none;
+    }
+
+</style>
+
+<div class="container">
+
+
+    <div class="container mt-5">
+        <h1>Login</h1>
+        
+
+        <div class="container mt-5">
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </div>
+
+        <hr />
+        <div class="row">
+            <div class="col-md-4">
+                <form asp-action="LoginUser">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="UserName" class="control-label">Username</label>
+                        <input type="text" asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="UserPassword" class="control-label">Password</label>
+                        <input type="text" asp-for="UserPassword" type="password" class="form-control" />
+                        <span asp-validation-for="UserPassword" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="form-group mt-2">
+                        <input type="submit" value="Login" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div>
+            <button class="btn btn-primary mt-2">
+                <a style="color:white; text-decoration:none;" class="mt-2" asp-action="Index" asp-controller="Home">Back </a>
+            </button>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

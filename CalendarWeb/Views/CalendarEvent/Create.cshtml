@@ -1,0 +1,81 @@
+﻿@model CalendarWeb.Models.CalendarEventDate
+
+<form asp-action="Add" asp-controller="CalendarEvent">
+    
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Modal title</h5>
+
+            <button type="button" asp-action="Event" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+            <div class="form-group">
+                @*<label asp-for="DateId" class="control-label"></label>*@
+                <input asp-for="DateId" class="form-control" hidden />
+                <span asp-validation-for="DateId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NepaliDate" class="control-label"></label>
+                <input asp-for="NepaliDate" class="form-control" />
+                <span asp-validation-for="NepaliDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventName" class="control-label"></label>
+               <select asp-items="@ViewBag.EventList" asp-for="EventName" class="form-control"></select>
+                <span asp-validation-for="EventName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventDescription" class="control-label"></label>
+                <input asp-for="EventDescription" class="form-control" />
+                <span asp-validation-for="EventDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@*<h4>CalendarEventDate</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="DateId" class="control-label"></label>
+                <input asp-for="DateId" class="form-control" />
+                <span asp-validation-for="DateId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NepaliDate" class="control-label"></label>
+                <input asp-for="NepaliDate" class="form-control" />
+                <span asp-validation-for="NepaliDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventName" class="control-label"></label>
+                <input asp-for="EventName" class="form-control" />
+                <span asp-validation-for="EventName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventDescription" class="control-label"></label>
+                <input asp-for="EventDescription" class="form-control" />
+                <span asp-validation-for="EventDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

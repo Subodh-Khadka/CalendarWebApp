@@ -1,0 +1,42 @@
+﻿@model CalendarWeb.Models.CalendarEventCategory
+
+<h4>CalendarEventCategory</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Creates">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="EventId" class="control-label"></label>
+                <input asp-for="EventId" class="form-control" />
+                <span asp-validation-for="EventId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventName" class="control-label"></label>
+                <input asp-for="EventName" class="form-control" />
+                <span asp-validation-for="EventName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EventColor" class="control-label"></label>
+                <input asp-for="EventColor" class="form-control" />
+                <span asp-validation-for="EventColor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RemarkPosition" class="control-label"></label>
+                <input asp-for="RemarkPosition" class="form-control" />
+                <span asp-validation-for="RemarkPosition" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

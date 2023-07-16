@@ -1,0 +1,80 @@
+﻿@model IEnumerable<CalendarWeb.Models.CalendarEventDate>
+
+@{
+    ViewData["Title"] = "ReadEvents";
+    var monthList = ViewBag.MonthList as List<DayList>;
+}
+
+<h1>ReadEvents</h1>
+<form asp-action="ReadEvents" asp-controller="CalendarEvent"  method="get">
+    <div class="head">
+        <label for="monthDropdown">Select Month:</label>
+        <select id="monthDropdown" name="month">
+            <option value="1">Baisakh</option>
+            <option value="2">Jestha</option>
+            <option value="3">Asadh</option>
+            <option value="4">Sharawan</option>
+            <option value="5">Bhadra</option>
+            <option value="6">Asoj</option>
+            <option value="7">Kartik</option>
+            <option value="8">Mangsir</option>
+            <option value="9">Poush</option>
+            <option value="10">Magh</option>
+            <option value="11">Falgun</option>
+            <option value="12">Chaitra</option>
+
+        </select>
+        <button type="submit">Submit</button>
+    </div>
+</form>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DateId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NepaliDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EventDescription)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NepaliDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EventDescription)
+            </td>
+            <td>
+                <a asp-action="Delete" asp-controller="CalendarEvent" asp-route-id="@item.DateId">Delete</a>
+                    @*<button type="button" class="btn btn-danger"><a asp-action="Delete" asp-route-id="@item.DateId" asp-controller="CalendarEvent" data-ajax="true" data-ajax-method="get" data-ajax-confirm="are you sure you want to delete this?" data-ajax-complete="deletepage">Delete</a></button>*@
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+@*<script>
+    deletepage = function () {
+        location.reload();
+    }
+</script>*@

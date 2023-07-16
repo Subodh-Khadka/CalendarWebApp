@@ -1,0 +1,148 @@
+﻿@model IEnumerable<CalendarWeb.Models.CalendarEventCategory>
+
+<style>
+
+    body {
+        font-family: Arial;
+    }
+
+    .create {
+        padding: 1rem;
+        font-family: Arial;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 10px;
+    }
+
+        .create:hover {
+            background-color: lightgrey;
+        }
+
+        .create a {
+            text-decoration: none;
+        }
+
+    .table {
+        background-color: whitesmoke;
+    }
+
+        .table td {
+            font-family: 'Arial Rounded MT';
+        }
+
+        .table th {
+            color: deeppink;
+            font-weight: bold;
+            background-color: black;
+            color: wheat;
+            padding: 1rem;
+        }
+
+
+    ._btn button {
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .edit_btn {
+        background-color: limegreen;
+    }
+
+    .first_row {
+        background-color: black;
+        color: white;
+    }
+
+    td {
+        word-break: break-word;
+        word-break: break-all;
+    }
+
+    @@media only screen and (max-width:500px) {
+        .ct {
+            font-size: xx-small;
+        }
+
+        ._btn button {
+            padding: 0.1rem;
+            margin: 0px;
+        }
+
+        ._btn a {
+            font-size: xx-small;
+        }
+    }
+
+</style>
+
+<div class="container ct">
+    <button class="create btn-Primary mb-2">
+        <a asp-action="Create" asp-controller="Events" data-ajax="true" data-ajax-method="get" data-ajax-complete="Createpage1" data-bs-toggle="modal" data-bs-target="#exampleModal1">Create New Event</a>
+    </button>
+    <div class="table-responsive">
+        <table class="table">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EventId)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EventName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.EventColor)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.RemarkPosition)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int count = 1;
+                }
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td class="flex-wrap">
+                            <p>@count</p>
+                            @*@Html.DisplayFor(modelItem => item.EventId)*@
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EventName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.EventColor)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.RemarkPosition)
+                        </td>
+                        <td class="_btn">
+                            <button type="button" class="btn btn-info">
+                                <a asp-action="Edit" asp-route-id="@item.EventId" asp-controller="Events">Edit</a>
+                            </button>
+                            <button type="button" class="btn btn-danger">
+                                <a asp-action="Delete" asp-route-id="@item.EventId" asp-controller="Events" data-ajax="true" data-ajax-method="get" data-ajax-confirm="Are you sure you want to delete this?" data-ajax-complete="deletepage">Delete</a>
+                            </button>
+                        </td>
+                    </tr>
+                    count++;
+                    
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" id="create-page1">
+    </div>
+</div>
+<script>
+    Createpage1 = function (xhr) {
+        document.getElementById('create-page1').innerHTML = xhr.responseText;
+    }
+    deletepage = function () {
+        location.reload();
+    }
+</script>
